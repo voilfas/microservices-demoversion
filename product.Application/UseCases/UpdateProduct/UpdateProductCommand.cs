@@ -1,0 +1,17 @@
+﻿namespace product.Application.UseCases.UpdateProduct;
+
+public class UpdateProductCommand
+{
+    public Guid Id { get; }
+    public string Name { get; }
+    public decimal Price { get; }
+    public int Quantity { get; }
+
+    public UpdateProductCommand(Guid id, string name, decimal price, int quantity)
+    {
+        Id = id;
+        Name = name;
+        Price = price;
+        Quantity = quantity;
+    }
+}

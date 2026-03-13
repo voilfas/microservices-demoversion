@@ -41,7 +41,7 @@ public class Product
             : Result.Success(new Product(name, price, quantity));
     }
     
-    public Result UpdateCatalog(string name, decimal price, int quantity)
+    public Result UpdateProduct(string name, decimal price, int quantity)
     {
         var catalogAggregateUpdate = Validate(name, price, quantity);
         
