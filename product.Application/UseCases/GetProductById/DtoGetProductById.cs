@@ -1,6 +1,6 @@
 ﻿namespace product.Application.UseCases.GetProductById;
 
-public record ProductDto(
+public record DtoGetProductById(
     Guid Id,
     string Name,
     decimal Price,
