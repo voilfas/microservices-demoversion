@@ -8,6 +8,6 @@ public interface IProductRepository
     Task AddAsync(Product product); 
     Task<IReadOnlyList<Product>> GetPagedAsync(int pageNumber, int pageSize);
     Task<int> GetTotalAmountAsync();
-    Task<bool> DeleteAsync(Guid id); 
+    Task DeleteAsync(Guid id); 
     Task<Product> GetByIdAsync(Guid id); 
 }
