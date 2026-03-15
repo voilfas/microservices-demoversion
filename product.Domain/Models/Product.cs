@@ -8,6 +8,8 @@ public class Product
     public string Name { get; private set; } = null!;
     public decimal Price { get; private set; }
     public int Quantity { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public DateTime? UpdatedAt { get; private set; }
 
     private Product() {}
     
@@ -17,6 +19,7 @@ public class Product
         Name = name;
         Price = price;
         Quantity = quantity;
+        CreatedAt = DateTime.UtcNow;
     }
 
     private static Result Validate(string name, decimal price, int quantity)
@@ -28,7 +31,7 @@ public class Product
             return Result.Failure("Name can't be less than 2 and more than 100 characters!");
 
         if (price <= 0)
-            return Result.Failure("Price can't be negative!");
+            return Result.Failure("Price must be greater than 0!");
         
         return quantity < 0 ? Result.Failure("Quantity cannot be negative!") : Result.Success();
     }
@@ -51,6 +54,7 @@ public class Product
         Name = name;
         Price = price;
         Quantity = quantity;
+        UpdatedAt = DateTime.UtcNow;
 
         return Result.Success();
     }
@@ -61,6 +65,7 @@ public class Product
             return Result.Failure<Product>("Quantity cannot be negative!");
         
         Quantity += quantity;
+        UpdatedAt = DateTime.UtcNow;
         
         return Result.Success();
     }
@@ -68,25 +73,27 @@ public class Product
     public Result DecreaseQuantity(int quantity)
     {
         if (quantity <= 0)
-            return Result.Failure<Product>("Quantity cannot be negative!");
+            return Result.Failure("Quantity cannot be negative!");
         
         if(Quantity < quantity)
-            return Result.Failure<Product>("Cannot decrease when Quantity is less than decrease quantity!");
+            return Result.Failure("Cannot decrease when Quantity is less than decrease quantity!");
         
         Quantity -= quantity;
+        UpdatedAt = DateTime.UtcNow;
         
         return Result.Success();
     }
 
     public Result ChangePrice(decimal newPrice)
     {
-        if (newPrice < 0)
-            return Result.Failure("price can't be negative!");
+        if (newPrice <= 0)
+            return Result.Failure("Price must be greater than 0!");
         
         if (Price == newPrice)
-            return Result.Failure("price can't be equal to price!");
+            return Result.Failure("New price must be different from current price!");
         
         Price = newPrice;
+        UpdatedAt = DateTime.UtcNow;
         
         return Result.Success();
     }
