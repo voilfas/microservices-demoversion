@@ -1,4 +1,5 @@
-﻿using product.Domain.Models;
+﻿using CSharpFunctionalExtensions;
+using product.Domain.Models;
 
 namespace product.Application;
 
@@ -8,6 +9,6 @@ public interface IProductRepository
     Task AddAsync(Product product); 
     Task<IReadOnlyList<Product>> GetPagedAsync(int pageNumber, int pageSize);
     Task<int> GetTotalAmountAsync();
-    Task DeleteAsync(Guid id); 
-    Task<Product> GetByIdAsync(Guid id); 
+    Task<Result> DeleteAsync(Guid id); 
+    Task<Product?> GetByIdAsync(Guid id); 
 }

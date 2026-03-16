@@ -16,10 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Repositories\" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <ProjectReference Include="..\product.Application\product.Application.csproj" />
       <ProjectReference Include="..\product.Domain\product.Domain.csproj" />
     </ItemGroup>
 
