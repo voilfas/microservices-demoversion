@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using product.Domain.Models;
 
@@ -40,6 +39,6 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.Property(p => p.UpdatedAt)
             .IsRequired(false)
-            .HasColumnName("updated_at");;
+            .HasColumnName("updated_at");
     }
 }

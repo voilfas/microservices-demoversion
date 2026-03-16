@@ -13,9 +13,9 @@ public class DeleteProductHandler
 
     public async Task<Result> Handle(DeleteProductCommand command)
     {
-        var productDelete = await _repository.GetByIdAsync(command.Id);
+        var productDelete = await _repository.DeleteAsync(command.Id);
 
-        if (productDelete is null)
+        if (productDelete.IsFailure)
             return Result.Failure("Product not found");
         
         await _repository.SaveChangesAsync();
