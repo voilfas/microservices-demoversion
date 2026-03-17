@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using product.Application;
 using product.Domain.Models;
 
 namespace product.Infrastructure;
 
-public class ProductDbContext : DbContext
+public class ProductDbContext : DbContext, IProductReadDbContext
 {
     public DbSet<Product>  Products { get; set; }
     
