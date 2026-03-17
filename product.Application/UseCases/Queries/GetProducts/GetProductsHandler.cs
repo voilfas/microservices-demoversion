@@ -1,44 +1,50 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using product.Application.Common;
 
 namespace product.Application.UseCases.Queries.GetProducts;
 
 public class GetProductsHandler
 {
-    private readonly IProductRepository _repository;
+    private readonly IProductReadDbContext _dbContext;
 
-    public GetProductsHandler(IProductRepository repository)
+    public GetProductsHandler(IProductReadDbContext dbContext)
     {
-        _repository = repository;
+        _dbContext = dbContext;
     }
 
     public async Task<Result<PagedResult<DtoProductsList>>> Handle(GetProductsQuery query)
     {
         if (query.PageNumber <= 0)
-            return Result.Failure<PagedResult<DtoProductsList>>("Page number cannot be zero or  negative!");
+            return Result.Failure<PagedResult<DtoProductsList>>(
+                "Page number must be greater than 0!");
         
         if (query.PageSize is <= 0 or > 50)
-            return Result.Failure<PagedResult<DtoProductsList>>("Page size must be between 1 and 50!");
-        
-        var productList = await _repository.GetPagedAsync(query.PageNumber, query.PageSize);
-        
-        var totalAmount = await _repository.GetTotalAmountAsync();
+            return Result.Failure<PagedResult<DtoProductsList>>(
+                "Page size must be between 1 and 50!");
 
-        var dto = productList
+        var productsList = await _dbContext.Products
+            .AsNoTracking()
+            .OrderBy(p => p.CreatedAt)
+            .Skip((query.PageNumber - 1) * query.PageSize)
+            .Take(query.PageSize)
             .Select(p => new DtoProductsList(
-                p.Id, 
-                p.Name, 
-                p.Price, 
-                p.Quantity))
-            .ToList();
+                p.Id,
+                p.Name,
+                p.Price,
+                p.Quantity,
+                p.CreatedAt
+            ))
+            .ToListAsync();
 
-        var pagedResult = new PagedResult<DtoProductsList>(
-            dto, 
-            query.PageNumber, 
-            query.PageSize, 
-            totalAmount
-            );
+        var totalCount = await _dbContext.Products.CountAsync();
         
-        return Result.Success(pagedResult);
+        return Result.Success(
+            new PagedResult<DtoProductsList>(
+                productsList, 
+                query.PageNumber, 
+                query.PageSize, 
+                totalCount));
+
     }
 }

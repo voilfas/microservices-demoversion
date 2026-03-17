@@ -4,5 +4,6 @@ public record DtoProductsList(
     Guid Id,
     string Name,
     decimal Price,
-    int Quantity
+    int Quantity,
+    DateTime CreatedAt
 );

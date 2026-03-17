@@ -1,30 +1,33 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace product.Application.UseCases.Queries.GetProductById;
 
 public class GetProductByIdHandler
 {
-    private readonly IProductRepository _productRepository;
+    private readonly IProductReadDbContext _dbContext;
 
-    public GetProductByIdHandler(IProductRepository productRepository)
+    public GetProductByIdHandler(IProductReadDbContext dbContext)
     {
-        _productRepository = productRepository;
+        _dbContext = dbContext;
     }
 
     public async Task<Result<DtoGetProductById>> Handle(GetProductByIdQuery query)
     {
-        var product = await _productRepository.GetByIdAsync(query.Id);
-
-        if (product is null)
-            return Result.Failure<DtoGetProductById>("Product not found");
-
-        var dto = new DtoGetProductById(
-            product.Id,
-            product.Name,
-            product.Price,
-            product.Quantity
-        );
-        
-        return Result.Success(dto);
+       var product =  await _dbContext.Products
+           .AsNoTracking()
+           .Where(p => p.Id == query.Id)
+           .Select(p => new DtoGetProductById(
+               p.Id,
+               p.Name, 
+               p.Price,
+               p.Quantity, 
+               p.CreatedAt))
+           .FirstOrDefaultAsync();
+       
+       if (product is null)
+           return Result.Failure<DtoGetProductById>("Product not found");
+       
+       return Result.Success(product);
     }
 }
