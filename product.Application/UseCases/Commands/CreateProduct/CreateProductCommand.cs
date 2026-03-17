@@ -1,7 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using product.Domain.Models;
-
-namespace product.Application.UseCases.CreateProduct;
+﻿namespace product.Application.UseCases.Commands.CreateProduct;
 
 public class CreateProductCommand
 {

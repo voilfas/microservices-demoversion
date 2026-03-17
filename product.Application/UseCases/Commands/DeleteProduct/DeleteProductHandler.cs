@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace product.Application.UseCases.DeleteProduct;
+namespace product.Application.UseCases.Commands.DeleteProduct;
 
 public class DeleteProductHandler
 {

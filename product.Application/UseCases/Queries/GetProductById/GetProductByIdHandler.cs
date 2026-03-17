@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace product.Application.UseCases.GetProductById;
+namespace product.Application.UseCases.Queries.GetProductById;
 
 public class GetProductByIdHandler
 {

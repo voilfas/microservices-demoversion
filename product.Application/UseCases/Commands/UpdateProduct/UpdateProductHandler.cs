@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using product.Domain.Models;
 
-namespace product.Application.UseCases.UpdateProduct;
+namespace product.Application.UseCases.Commands.UpdateProduct;
 
 public class UpdateProductHandler
 {

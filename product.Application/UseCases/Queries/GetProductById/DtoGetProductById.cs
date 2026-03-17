@@ -1,4 +1,4 @@
-﻿namespace product.Application.UseCases.GetProductById;
+﻿namespace product.Application.UseCases.Queries.GetProductById;
 
 public record DtoGetProductById(
     Guid Id,

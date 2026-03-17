@@ -10,4 +10,9 @@
       <ProjectReference Include="..\product.Domain\product.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="UseCases\Commands\" />
+      <Folder Include="UseCases\Queries\" />
+    </ItemGroup>
+
 </Project>

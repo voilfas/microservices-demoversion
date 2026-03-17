@@ -1,4 +1,4 @@
-﻿namespace product.Application.UseCases.UpdateProduct;
+﻿namespace product.Application.UseCases.Commands.UpdateProduct;
 
 public class UpdateProductCommand
 {
