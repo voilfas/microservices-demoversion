@@ -1,6 +1,6 @@
 ﻿namespace product.Api.Dto;
 
-public record UpdateProductRequest(
+public record UpdateProductResponce(
     string Name,
     decimal Price,
     int Quantity

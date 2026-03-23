@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using product.Api.Dto;
-using product.Application.UseCases.CreateProduct;
-using product.Application.UseCases.DeleteProduct;
-using product.Application.UseCases.GetProductById;
-using product.Application.UseCases.GetProducts;
-using product.Application.UseCases.UpdateProduct;
+using product.Application.UseCases.Commands.CreateProduct;
+using product.Application.UseCases.Commands.DeleteProduct;
+using product.Application.UseCases.Commands.UpdateProduct;
+using product.Application.UseCases.Queries.GetProductById;
+using product.Application.UseCases.Queries.GetProducts;
 
 namespace product.Api.Controllers;
 
@@ -16,39 +16,37 @@ public class ProductController : ControllerBase
     private readonly GetProductByIdHandler _getProductByIdHandler;
     private readonly UpdateProductHandler _updateProductHandler;
     private readonly DeleteProductHandler _deleteProductHandler;
-    private readonly GetProductAllHandler _getProductAllHandler;
+    private readonly GetProductsHandler _getProductsHandler;
     
     public ProductController(
         CreateProductHandler createProductHandler,
         GetProductByIdHandler getProductByIdHandler, 
         UpdateProductHandler updateProductHandler, 
         DeleteProductHandler deleteProductHandler, 
-        GetProductAllHandler getProductAllHandler)
+        GetProductsHandler getProductsHandler)
     {
         _createProductHandler = createProductHandler;
         _getProductByIdHandler = getProductByIdHandler;
         _updateProductHandler = updateProductHandler;
         _deleteProductHandler = deleteProductHandler;
-        _getProductAllHandler = getProductAllHandler;
+        _getProductsHandler = getProductsHandler;
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetProductById(Guid id)
     {
-        var query = new GetProductByIdQuery(id);
-        
-        var result = await _getProductByIdHandler.Handle(query);
+        var result = await _getProductByIdHandler.Handle(new GetProductByIdQuery(id));
         
         if (result.IsFailure)
-            return BadRequest(result.Error);
+            return NotFound(result.Error);
         
         return Ok(result.Value);
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateProduct(CreateProductRequest request)
+    public async Task<IActionResult> CreateProduct(CreateProductResponce responce)
     {
-        var command = new CreateProductCommand(request.Name, request.Price, request.Quantity);
+        var command = new CreateProductCommand(responce.Name, responce.Price, responce.Quantity);
 
         var result = await _createProductHandler.Handle(command);
         
@@ -62,9 +60,9 @@ public class ProductController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductRequest request)
+    public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductResponce responce)
     {
-        var command = new UpdateProductCommand(id,  request.Name, request.Price, request.Quantity);
+        var command = new UpdateProductCommand(id,  responce.Name, responce.Price, responce.Quantity);
         
         var result = await _updateProductHandler.Handle(command);
         
@@ -88,16 +86,21 @@ public class ProductController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetProducts([FromQuery] GetProductsRequest request)
     {
-        var result = await _getProductAllHandler
-            .Handle(
-                new GetProductAllQuery(
-                    request.PageNumber, 
-                    request.PageSize)
-            );
-        
+        var query = new GetProductsQuery(
+            PageNumber: request.PageNumber,
+            PageSize: request.PageSize,
+            MinPrice: request.MinPrice,
+            MaxPrice: request.MaxPrice,
+            NameProduct: request.NameProduct,
+            SortBy: request.SortBy,
+            SortDirection: request.SortDirection
+        );
+
+        var result = await _getProductsHandler.Handle(query);
+
         if (result.IsFailure)
             return BadRequest(result.Error);
-        
+
         return Ok(result.Value);
     }
 }

@@ -1,9 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using product.Application;
-using product.Application.UseCases.CreateProduct;
-using product.Application.UseCases.DeleteProduct;
-using product.Application.UseCases.GetProductById;
-using product.Application.UseCases.UpdateProduct;
+using product.Application.UseCases.Commands.CreateProduct;
 using product.Infrastructure;
 using product.Infrastructure.Repositories;
 
@@ -16,6 +13,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ProductDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
+
+builder.Services.AddScoped<IProductReadDbContext>(provider => 
+    provider.GetRequiredService<ProductDbContext>());
 
 /*builder.Services.AddScoped<CreateProductHandler>();
 builder.Services.AddScoped<UpdateProductHandler>();
