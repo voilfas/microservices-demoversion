@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.Extensions.Caching.Distributed;
 using product.Application.Interfaces;
 using product.Domain.Models;
 
@@ -7,10 +8,12 @@ namespace product.Application.UseCases.Commands.UpdateProduct;
 public class UpdateProductHandler
 {
     private readonly IProductRepository _productRepository;
+    private readonly IDistributedCache _cache;
     
-    public UpdateProductHandler(IProductRepository productRepository)
+    public UpdateProductHandler(IProductRepository productRepository, IDistributedCache cache)
     {
         _productRepository = productRepository;
+        _cache = cache;
     }
 
     public async Task<Result<UpdateProductDto>> Handle(UpdateProductCommand command)
@@ -26,6 +29,8 @@ public class UpdateProductHandler
             return Result.Failure<UpdateProductDto>(updateProduct.Error);
         
         await _productRepository.SaveChangesAsync();
+        
+        await _cache.RemoveAsync($"product:{product.Id}");
 
         var dto = new UpdateProductDto(
             product.Id, 
