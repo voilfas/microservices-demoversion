@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using product.Application.Interfaces;
 using product.Domain.Models;
 
 namespace product.Application.UseCases.Commands.CreateProduct;

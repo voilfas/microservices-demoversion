@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using product.Application.Common;
+using product.Application.Interfaces;
 
 namespace product.Application.UseCases.Queries.GetProducts;
 

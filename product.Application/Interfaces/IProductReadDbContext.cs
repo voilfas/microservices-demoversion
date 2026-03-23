@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using product.Domain.Models;
 
-namespace product.Application;
+namespace product.Application.Interfaces;
 
 public interface IProductReadDbContext
 {

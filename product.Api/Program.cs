@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using product.Application;
+using product.Application.Interfaces;
 using product.Application.UseCases.Commands.CreateProduct;
 using product.Infrastructure;
 using product.Infrastructure.Repositories;

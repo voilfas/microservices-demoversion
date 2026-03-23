@@ -36,22 +36,33 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> GetProductById(Guid id)
     {
         var result = await _getProductByIdHandler.Handle(new GetProductByIdQuery(id));
-        
+
         if (result.IsFailure)
-            return NotFound(result.Error);
+        {
+            return Problem(
+                detail: result.Error,
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Product not found"
+                );
+        }
         
         return Ok(result.Value);
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateProduct(CreateProductResponce responce)
+    public async Task<IActionResult> CreateProduct(CreateProductResponse response)
     {
-        var command = new CreateProductCommand(responce.Name, responce.Price, responce.Quantity);
+        var command = new CreateProductCommand(response.Name, response.Price, response.Quantity);
 
         var result = await _createProductHandler.Handle(command);
-        
+
         if (result.IsFailure)
-            return BadRequest(result.Error);
+        {
+            return Problem(
+                detail: result.Error,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Product not created");
+        }
         
         return CreatedAtAction(
             nameof(GetProductById),
@@ -60,14 +71,19 @@ public class ProductController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductResponce responce)
+    public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductRequest request)
     {
-        var command = new UpdateProductCommand(id,  responce.Name, responce.Price, responce.Quantity);
+        var command = new UpdateProductCommand(id,  request.Name, request.Price, request.Quantity);
         
         var result = await _updateProductHandler.Handle(command);
-        
+
         if (result.IsFailure)
-            return BadRequest(result.Error);
+        {
+            return Problem(
+                detail: result.Error,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Product not updated");
+        }
         
         return Ok(result.Value);
     }
@@ -76,9 +92,14 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> DeleteProduct(Guid id)
     {
         var result = await _deleteProductHandler.Handle(new DeleteProductCommand(id));
-        
-        if(result.IsFailure)
-            return NotFound(result.Error);
+
+        if (result.IsFailure)
+        {
+            return Problem(
+                detail: result.Error,
+                statusCode: StatusCodes.Status404NotFound,
+                title: "Product not deleted");
+        }
         
         return NoContent();
     }
@@ -99,7 +120,12 @@ public class ProductController : ControllerBase
         var result = await _getProductsHandler.Handle(query);
 
         if (result.IsFailure)
-            return BadRequest(result.Error);
+        {
+            return Problem(
+                detail: result.Error,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Product not found");
+        }
 
         return Ok(result.Value);
     }

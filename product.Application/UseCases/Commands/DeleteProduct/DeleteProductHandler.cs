@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using product.Application.Interfaces;
 
 namespace product.Application.UseCases.Commands.DeleteProduct;
 
