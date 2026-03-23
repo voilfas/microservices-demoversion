@@ -2,5 +2,12 @@
 
 public record GetProductsQuery(
     int PageNumber,
-    int PageSize
+    int PageSize,
+    
+    decimal? MinPrice,
+    decimal? MaxPrice,
+    string? NameProduct,
+    
+    ProductSortBy? SortBy,
+    SortDirection? SortDirection
 );
