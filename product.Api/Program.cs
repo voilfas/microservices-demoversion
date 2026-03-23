@@ -15,6 +15,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ProductDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "Product_";
+});
+
 builder.Services.AddScoped<IProductReadDbContext>(provider => 
     provider.GetRequiredService<ProductDbContext>());
 

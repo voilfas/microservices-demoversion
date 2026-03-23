@@ -50,9 +50,9 @@ public class ProductController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateProduct(CreateProductResponse response)
+    public async Task<IActionResult> CreateProduct(CreateProductRequest request)
     {
-        var command = new CreateProductCommand(response.Name, response.Price, response.Quantity);
+        var command = new CreateProductCommand(request.Name, request.Price, request.Quantity);
 
         var result = await _createProductHandler.Handle(command);
 

@@ -1,0 +1,41 @@
+﻿# Это файл для тестирования API продуктов
+@baseUrl = https://localhost:7157
+@productId = 6a202da6-49bf-4fda-af26-27c87231a01c
+
+### 1. Получить список продуктов
+GET {{baseUrl}}/api/products
+Accept: application/json
+
+
+### 2. Создать новый продукт
+POST {{baseUrl}}/api/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Игровая приставка",
+  "price": 499.99,
+  "quantity": 5
+}
+
+
+### 3. Получить продукт по ID
+GET {{baseUrl}}/api/products/{{productId}}
+Accept: application/json
+
+
+### 4. Удалить продукт по ID
+DELETE {{baseUrl}}/api/products/{{productId}}
+Accept: application/json
+
+
+### 5. Обновить продукт по ID
+PUT {{baseUrl}}/api/products/{{productId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Обновли приставку",
+  "price": 499.99,
+  "quantity": 5
+}
