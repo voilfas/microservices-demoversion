@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using product.Application.Common;
 using product.Application.Interfaces;
 
@@ -8,22 +9,25 @@ namespace product.Application.UseCases.Queries.GetProducts;
 public class GetProductsHandler
 {
     private readonly IProductReadDbContext _dbContext;
+    private readonly ILogger<GetProductsHandler> _logger;
 
-    public GetProductsHandler(IProductReadDbContext dbContext)
+    public GetProductsHandler(IProductReadDbContext dbContext,  ILogger<GetProductsHandler> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<Result<PagedResult<DtoProductsList>>> Handle(GetProductsQuery query)
     {
-        if (query.PageNumber <= 0)
-            return Result.Failure<PagedResult<DtoProductsList>>(
-                "Page number must be greater than 0!");
-        
-        if (query.PageSize is <= 0 or > 50)
-            return Result.Failure<PagedResult<DtoProductsList>>(
-                "Page size must be between 1 and 50!");
+        _logger.LogInformation("Fetching products list. Page: {PageNumber}, Size: {PageSize}, Filter Name: {NameProduct}", 
+            query.PageNumber, query.PageSize, query.NameProduct ?? "None");
 
+        if (query.PageNumber <= 0 || query.PageSize is <= 0 or > 50)
+        {
+            _logger.LogWarning("Invalid pagination params. Page: {PageNumber}, Size: {PageSize}", query.PageNumber, query.PageSize);
+            return Result.Failure<PagedResult<DtoProductsList>>("Page number must be greater than 0 and page size must be between 1 and 50!");
+        }
+        
         var productsQuery = _dbContext.Products.AsNoTracking();
         
         if (query.MinPrice.HasValue)
@@ -75,6 +79,9 @@ public class GetProductsHandler
                 p.CreatedAt
             ))
             .ToListAsync();
+        
+        _logger.LogInformation("Found {Count} products total. Returning page {PageNumber} with {PageCount} items", 
+            totalCount, query.PageNumber, productsList.Count);
         
         return Result.Success(new PagedResult<DtoProductsList>(
             productsList, 
