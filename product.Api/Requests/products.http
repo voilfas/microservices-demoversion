@@ -1,6 +1,6 @@
 ﻿# Это файл для тестирования API продуктов
 @baseUrl = https://localhost:7157
-@productId = 6a202da6-49bf-4fda-af26-27c87231a01c
+@productId = 99dff334-ed45-45f7-b9ac-f8f06d80c4ac
 
 ### 1. Получить список продуктов
 GET {{baseUrl}}/api/products

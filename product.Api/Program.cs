@@ -1,14 +1,22 @@
 using Microsoft.EntityFrameworkCore;
-using product.Application;
 using product.Application.Interfaces;
 using product.Application.UseCases.Commands.CreateProduct;
 using product.Infrastructure;
 using product.Infrastructure.Repositories;
+using Serilog;
+using Serilog.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
 
+builder.Host.UseSerilog();
+
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -40,6 +48,8 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -47,7 +57,18 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.MapControllers();
 
-app.Run();
+try
+{
+    Log.Information("Starting web host");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Host terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
