@@ -43,7 +43,6 @@ builder.Services.Scan(scan => scan
     .AsSelf()
     .WithScopedLifetime());
 
-
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
